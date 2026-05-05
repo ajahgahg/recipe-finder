@@ -49,3 +49,25 @@ async function findRecipes() {
             messages: [{ role: "user", content: `Ingredients I have: ${selected.join(", ")}` }]
           })
         });
+
+          const data = await res.json();
+        const text = data.content.map(i => i.text || "").join("");
+        const clean = text.replace(/```json|```/g, "").trim();
+        const recipes = JSON.parse(clean);
+
+        status.textContent = `${recipes.length} recipes found using your ingredients`;
+        results.innerHTML = recipes.map(r => `
+          <div class="recipe-card">
+            <h3>${r.name}</h3>
+            <p>${r.description}</p>
+            <div>
+              <span class="badge">${r.time}</span>
+              <span class="badge">${r.difficulty}</span>
+              ${r.uses.map(u => `<span class="badge highlight">${u}</span>`).join("")}
+            </div>
+          </div>
+        `).join("");
+      } catch (e) {
+        status.textContent = "Something went wrong. Try again.";
+      }
+    }
