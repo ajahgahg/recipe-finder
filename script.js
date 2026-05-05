@@ -32,3 +32,20 @@ async function findRecipes() {
     document.getElementById("status").textContent = "Pick at least one ingredient first.";
     return;
   }
+
+  const status = document.getElementById("status");
+  const results = document.getElementById("results");
+  status.textContent = "Finding recipes...";
+  results.innerHTML = "";
+
+        try {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1000,
+            system: `You are a recipe assistant. When given a list of ingredients, suggest 3 recipes that use some or all of them. Respond ONLY with a JSON array of objects, no markdown, no extra text. Each object: { "name": string, "time": string, "difficulty": "easy"|"medium"|"hard", "uses": string[], "description": string (1-2 sentences) }`,
+            messages: [{ role: "user", content: `Ingredients I have: ${selected.join(", ")}` }]
+          })
+        });
