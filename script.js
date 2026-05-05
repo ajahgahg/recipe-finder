@@ -1,23 +1,23 @@
 const ingredients = [
-      { value: "chicken", emoji: "🍗" },
-      { value: "rice", emoji: "🍚" },
-      { value: "cheese", emoji: "🧀" },
-      { value: "eggs", emoji: "🥚" },
-      { value: "pasta", emoji: "🍝" },
-      { value: "tomatoes", emoji: "🍅" },
-      { value: "onion", emoji: "🧅" },
-      { value: "garlic", emoji: "🧄" },
-      { value: "spinach", emoji: "🥬" },
-      { value: "potatoes", emoji: "🥔" },
-      { value: "beef", emoji: "🥩" },
-      { value: "salmon", emoji: "🐟" },
-      { value: "broccoli", emoji: "🥦" },
-      { value: "mushrooms", emoji: "🍄" },
-      { value: "lemon", emoji: "🍋" },
-      { value: "butter", emoji: "🧈" },
-    ];
+  { value: "chicken", emoji: "🍗" },
+  { value: "rice", emoji: "🍚" },
+  { value: "cheese", emoji: "🧀" },
+  { value: "eggs", emoji: "🥚" },
+  { value: "pasta", emoji: "🍝" },
+  { value: "tomatoes", emoji: "🍅" },
+  { value: "onion", emoji: "🧅" },
+  { value: "garlic", emoji: "🧄" },
+  { value: "spinach", emoji: "🥬" },
+  { value: "potatoes", emoji: "🥔" },
+  { value: "beef", emoji: "🥩" },
+  { value: "salmon", emoji: "🐟" },
+  { value: "broccoli", emoji: "🥦" },
+  { value: "mushrooms", emoji: "🍄" },
+  { value: "lemon", emoji: "🍋" },
+  { value: "butter", emoji: "🧈" },
+];
 
-    const grid = document.getElementById("grid");
+const grid = document.getElementById("grid");
 ingredients.forEach(ing => {
   const chip = document.createElement("label");
   chip.className = "chip";
@@ -38,36 +38,36 @@ async function findRecipes() {
   status.textContent = "Finding recipes...";
   results.innerHTML = "";
 
-        try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 1000,
-            system: `You are a recipe assistant. When given a list of ingredients, suggest 3 recipes that use some or all of them. Respond ONLY with a JSON array of objects, no markdown, no extra text. Each object: { "name": string, "time": string, "difficulty": "easy"|"medium"|"hard", "uses": string[], "description": string (1-2 sentences) }`,
-            messages: [{ role: "user", content: `Ingredients I have: ${selected.join(", ")}` }]
-          })
-        });
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: `You are a recipe assistant. When given a list of ingredients, suggest 3 recipes that use some or all of them. Respond ONLY with a JSON array of objects, no markdown, no extra text. Each object: { "name": string, "time": string, "difficulty": "easy"|"medium"|"hard", "uses": string[], "description": string (1-2 sentences) }`,
+        messages: [{ role: "user", content: `Ingredients I have: ${selected.join(", ")}` }]
+      })
+    });
 
-          const data = await res.json();
-        const text = data.content.map(i => i.text || "").join("");
-        const clean = text.replace(/```json|```/g, "").trim();
-        const recipes = JSON.parse(clean);
+    const data = await res.json();
+    const text = data.content.map(i => i.text || "").join("");
+    const clean = text.replace(/```json|```/g, "").trim();
+    const recipes = JSON.parse(clean);
 
-        status.textContent = `${recipes.length} recipes found using your ingredients`;
-        results.innerHTML = recipes.map(r => `
-          <div class="recipe-card">
-            <h3>${r.name}</h3>
-            <p>${r.description}</p>
-            <div>
-              <span class="badge">${r.time}</span>
-              <span class="badge">${r.difficulty}</span>
-              ${r.uses.map(u => `<span class="badge highlight">${u}</span>`).join("")}
-            </div>
-          </div>
-        `).join("");
-      } catch (e) {
-        status.textContent = "Something went wrong. Try again.";
-      }
-    }
+    status.textContent = `${recipes.length} recipes found using your ingredients`;
+    results.innerHTML = recipes.map(r => `
+      <div class="recipe-card">
+        <h3>${r.name}</h3>
+        <p>${r.description}</p>
+        <div>
+          <span class="badge">${r.time}</span>
+          <span class="badge">${r.difficulty}</span>
+          ${r.uses.map(u => `<span class="badge highlight">${u}</span>`).join("")}
+        </div>
+      </div>
+    `).join("");
+  } catch (e) {
+    status.textContent = "Something went wrong. Try again.";
+  }
+}
