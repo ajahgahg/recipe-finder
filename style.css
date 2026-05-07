@@ -169,6 +169,25 @@ h1 {
   background: #e8f0fe;
   color: #1a56db;
 }
+
+#ingredient-search {
+  width: 100%;
+  max-width: 500px;
+  display: block;
+  margin: 0 auto 30px;
+  padding: 14px 18px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+  outline: none;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+
+#ingredient-search:focus {
+  border-color: #ff914d;
+  box-shadow: 0 0 0 4px rgba(255, 145, 77, 0.15);
+}
  
 /* ── Responsive ── */
  
