@@ -115,7 +115,16 @@ function renderIngredients(searchTerm = "") {
 ----------------------------*/
 
 searchInput.addEventListener("input", () => {
-  renderIngredients(searchInput.value);
+  const value = searchInput.value.trim();
+
+  if (!value) {
+    container.innerHTML = "";
+    container.classList.remove("show");
+    return;
+  }
+
+  container.classList.add("show");
+  renderIngredients(value);
 });
 
 /* ---------------------------
