@@ -6,9 +6,7 @@ const ingredientCategories = {
     { value: "eggs", emoji: "🥚" },
     { value: "shrimp", emoji: "🍤" },
     { value: "tofu", emoji: "🟫" },
-    { value: "turkey", emoji: "🍖" },
-    { value: "pork", emoji: "🥓" },
-    { value: "beans", emoji: "🫘" }
+    { value: "pork", emoji: "🥓" }
   ],
 
   Vegetables: [
@@ -18,7 +16,6 @@ const ingredientCategories = {
     { value: "garlic", emoji: "🧄" },
     { value: "tomatoes", emoji: "🍅" },
     { value: "carrot", emoji: "🥕" },
-    { value: "potatoes", emoji: "🥔" },
     { value: "avocado", emoji: "🥑" }
   ],
 
@@ -32,29 +29,42 @@ const ingredientCategories = {
 
 const container = document.getElementById("ingredients-container");
 const searchInput = document.getElementById("ingredient-search");
-
-let selectedMode = false;
-
-/* ---------------------------
-   UI HELPERS
-----------------------------*/
+const selectedContainer = document.getElementById("selected-container");
 
 function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-function updateSelectedUI() {
-  const selectedContainer = document.getElementById("selected-container");
+/* ---------------------------
+   SELECTED INGREDIENTS UI
+----------------------------*/
 
+function updateSelectedUI() {
   const selected = [...document.querySelectorAll(".chip.selected")];
 
   selectedContainer.innerHTML = selected.map(chip => {
-    return `<div class="selected-pill">${chip.innerHTML}</div>`;
+    return `
+      <div class="selected-pill" data-value="${chip.dataset.value}">
+        ${chip.innerHTML} ✕
+      </div>
+    `;
   }).join("");
+
+  // remove when clicking pill
+  document.querySelectorAll(".selected-pill").forEach(pill => {
+    pill.addEventListener("click", () => {
+      const value = pill.dataset.value;
+
+      const chip = document.querySelector(`.chip[data-value="${value}"]`);
+      if (chip) chip.classList.remove("selected");
+
+      updateSelectedUI();
+    });
+  });
 }
 
 /* ---------------------------
-   RENDER ALL (SEARCH MODE)
+   RENDER INGREDIENTS
 ----------------------------*/
 
 function renderIngredients(searchTerm = "") {
@@ -91,9 +101,6 @@ function renderIngredients(searchTerm = "") {
       chip.addEventListener("click", () => {
         chip.classList.toggle("selected");
         updateSelectedUI();
-
-        selectedMode = true;
-        renderSelectedOnly();
       });
 
       grid.appendChild(chip);
@@ -104,63 +111,15 @@ function renderIngredients(searchTerm = "") {
 }
 
 /* ---------------------------
-   SELECTED ONLY VIEW
-----------------------------*/
-
-function renderSelectedOnly() {
-  container.innerHTML = "";
-
-  const selected = [...document.querySelectorAll(".chip.selected")];
-
-  if (!selected.length) {
-    container.innerHTML = "<p>No ingredients selected.</p>";
-    return;
-  }
-
-  const section = document.createElement("div");
-  section.className = "category";
-
-  section.innerHTML = `
-    <h2>Selected Ingredients</h2>
-    <div class="ingredient-grid"></div>
-  `;
-
-  const grid = section.querySelector(".ingredient-grid");
-
-  selected.forEach(chip => {
-    const clone = chip.cloneNode(true);
-
-    clone.addEventListener("click", () => {
-      chip.classList.remove("selected");
-      updateSelectedUI();
-      renderSelectedOnly();
-    });
-
-    grid.appendChild(clone);
-  });
-
-  container.appendChild(section);
-}
-
-/* ---------------------------
    SEARCH
 ----------------------------*/
 
 searchInput.addEventListener("input", () => {
-  const value = searchInput.value.trim();
-
-  selectedMode = false;
-
-  if (!value) {
-    container.innerHTML = "";
-    return;
-  }
-
-  renderIngredients(value);
+  renderIngredients(searchInput.value);
 });
 
 /* ---------------------------
-   API (UNCHANGED)
+   API CALL
 ----------------------------*/
 
 async function fetchMealsByIngredient(ingredient) {
@@ -173,7 +132,7 @@ async function fetchMealsByIngredient(ingredient) {
 }
 
 /* ---------------------------
-   FIND RECIPES (UNCHANGED)
+   FIND RECIPES
 ----------------------------*/
 
 async function findRecipes() {
@@ -188,7 +147,7 @@ async function findRecipes() {
     return;
   }
 
-  status.textContent = "Searching...";
+  status.textContent = "Searching recipes...";
   results.innerHTML = "";
 
   const allResults = await Promise.all(
@@ -220,22 +179,28 @@ async function findRecipes() {
 
   status.textContent = `${sorted.length} recipes found`;
 
-  sorted.forEach(m => {
+  sorted.forEach(meal => {
     const card = document.createElement("div");
     card.className = "recipe-card";
 
     card.onclick = () => {
-      window.open(`https://www.themealdb.com/meal/${m.idMeal}`, "_blank");
+      window.open(`https://www.themealdb.com/meal/${meal.idMeal}`, "_blank");
     };
 
     card.innerHTML = `
-      <img src="${m.strMealThumb}" />
-      <div>
-        <h3>${m.strMeal}</h3>
-        <p>${m.matchCount} match(es)</p>
+      <img src="${meal.strMealThumb}" />
+      <div class="card-body">
+        <h3>${meal.strMeal}</h3>
+        <span>${meal.matchCount} match(es)</span>
       </div>
     `;
 
     results.appendChild(card);
   });
 }
+
+/* ---------------------------
+   INIT
+----------------------------*/
+
+renderIngredients();
