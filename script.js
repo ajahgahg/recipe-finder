@@ -1,4 +1,5 @@
 const ingredientCategories = {
+
   Proteins: [
     { value: "chicken", emoji: "🍗" },
     { value: "beef", emoji: "🥩" },
@@ -6,7 +7,15 @@ const ingredientCategories = {
     { value: "eggs", emoji: "🥚" },
     { value: "shrimp", emoji: "🍤" },
     { value: "tofu", emoji: "🧈" },
-    { value: "turkey", emoji: "🍖" }
+    { value: "turkey", emoji: "🍖" },
+    { value: "pork", emoji: "🥓" },
+    { value: "tuna", emoji: "🐠" },
+    { value: "sausage", emoji: "🌭" },
+    { value: "ham", emoji: "🍖" },
+    { value: "bacon", emoji: "🥓" },
+    { value: "beans", emoji: "🫘" },
+    { value: "lentils", emoji: "🫘" },
+    { value: "chickpeas", emoji: "🫘" }
   ],
 
   Vegetables: [
@@ -19,7 +28,30 @@ const ingredientCategories = {
     { value: "potatoes", emoji: "🥔" },
     { value: "carrot", emoji: "🥕" },
     { value: "corn", emoji: "🌽" },
-    { value: "pepper", emoji: "🫑" }
+    { value: "pepper", emoji: "🫑" },
+    { value: "cucumber", emoji: "🥒" },
+    { value: "lettuce", emoji: "🥬" },
+    { value: "zucchini", emoji: "🥒" },
+    { value: "peas", emoji: "🟢" },
+    { value: "green beans", emoji: "🫛" },
+    { value: "cauliflower", emoji: "🥦" },
+    { value: "sweet potato", emoji: "🍠" },
+    { value: "celery", emoji: "🥬" },
+    { value: "cabbage", emoji: "🥬" },
+    { value: "avocado", emoji: "🥑" }
+  ],
+
+  Fruits: [
+    { value: "apple", emoji: "🍎" },
+    { value: "banana", emoji: "🍌" },
+    { value: "lemon", emoji: "🍋" },
+    { value: "lime", emoji: "🍋" },
+    { value: "orange", emoji: "🍊" },
+    { value: "strawberry", emoji: "🍓" },
+    { value: "blueberry", emoji: "🫐" },
+    { value: "pineapple", emoji: "🍍" },
+    { value: "grapes", emoji: "🍇" },
+    { value: "peach", emoji: "🍑" }
   ],
 
   GrainsAndCarbs: [
@@ -27,22 +59,50 @@ const ingredientCategories = {
     { value: "pasta", emoji: "🍝" },
     { value: "bread", emoji: "🍞" },
     { value: "noodles", emoji: "🍜" },
-    { value: "oats", emoji: "🥣" }
+    { value: "oats", emoji: "🥣" },
+    { value: "tortilla", emoji: "🌮" },
+    { value: "quinoa", emoji: "🥣" },
+    { value: "couscous", emoji: "🥣" },
+    { value: "bagel", emoji: "🥯" },
+    { value: "flour", emoji: "🌾" },
+    { value: "crackers", emoji: "🍘" }
   ],
 
   Dairy: [
     { value: "cheese", emoji: "🧀" },
     { value: "milk", emoji: "🥛" },
     { value: "butter", emoji: "🧈" },
-    { value: "yogurt", emoji: "🍶" }
+    { value: "yogurt", emoji: "🍶" },
+    { value: "cream", emoji: "🥛" },
+    { value: "mozzarella", emoji: "🧀" },
+    { value: "parmesan", emoji: "🧀" },
+    { value: "feta", emoji: "🧀" }
   ],
 
-  FruitsAndExtras: [
-    { value: "lemon", emoji: "🍋" },
-    { value: "apple", emoji: "🍎" },
-    { value: "avocado", emoji: "🥑" },
-    { value: "beans", emoji: "🫘" },
-    { value: "chili", emoji: "🌶️" }
+  HerbsAndSpices: [
+    { value: "basil", emoji: "🌿" },
+    { value: "parsley", emoji: "🌿" },
+    { value: "cilantro", emoji: "🌿" },
+    { value: "oregano", emoji: "🌿" },
+    { value: "thyme", emoji: "🌿" },
+    { value: "rosemary", emoji: "🌿" },
+    { value: "paprika", emoji: "🌶️" },
+    { value: "curry powder", emoji: "🍛" },
+    { value: "cinnamon", emoji: "🟤" },
+    { value: "ginger", emoji: "🫚" }
+  ],
+
+  SaucesAndExtras: [
+    { value: "soy sauce", emoji: "🥡" },
+    { value: "ketchup", emoji: "🍅" },
+    { value: "mustard", emoji: "🟡" },
+    { value: "mayonnaise", emoji: "🥪" },
+    { value: "bbq sauce", emoji: "🍖" },
+    { value: "hot sauce", emoji: "🌶️" },
+    { value: "olive oil", emoji: "🫒" },
+    { value: "vinegar", emoji: "🍶" },
+    { value: "honey", emoji: "🍯" },
+    { value: "peanut butter", emoji: "🥜" }
   ]
 };
 
