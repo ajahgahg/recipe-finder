@@ -1,12 +1,11 @@
 const ingredientCategories = {
-
   Proteins: [
     { value: "chicken", emoji: "🍗" },
     { value: "beef", emoji: "🥩" },
     { value: "salmon", emoji: "🐟" },
     { value: "eggs", emoji: "🥚" },
     { value: "shrimp", emoji: "🍤" },
-    { value: "tofu", emoji: "🧈" },
+    { value: "tofu", emoji: "🟫" },
     { value: "turkey", emoji: "🍖" },
     { value: "pork", emoji: "🥓" },
     { value: "tuna", emoji: "🐠" },
@@ -81,41 +80,48 @@ const ingredientCategories = {
 };
 
 const container = document.getElementById("ingredients-container");
+const searchInput = document.getElementById("ingredient-search");
 
 function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-function formatCategoryName(name) {
-  return name.replace(/([A-Z])/g, " $1").trim();
+/* ---------------------------
+   SELECTED INGREDIENT UI
+----------------------------*/
+
+function updateSelectedUI() {
+  const selectedContainer = document.getElementById("selected-container");
+
+  const selected = [...document.querySelectorAll(".chip.selected")];
+
+  selectedContainer.innerHTML = selected.map(chip => {
+    return `<div class="selected-pill">${chip.innerHTML}</div>`;
+  }).join("");
 }
 
-
-// RENDER INGREDIENTS
+/* ---------------------------
+   RENDER INGREDIENTS
+----------------------------*/
 
 function renderIngredients(searchTerm = "") {
-
   container.innerHTML = "";
-
-  if (searchTerm.trim() === "") {
-    return;
-  }
 
   Object.entries(ingredientCategories).forEach(([category, items]) => {
 
-    const filteredItems = items.filter(ing =>
-      ing.value.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredItems = searchTerm.trim() === ""
+      ? items
+      : items.filter(ing =>
+          ing.value.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-    if (filteredItems.length === 0) {
-      return;
-    }
+    if (!filteredItems.length) return;
 
     const section = document.createElement("div");
     section.className = "category";
 
     section.innerHTML = `
-      <h2>${formatCategoryName(category)}</h2>
+      <h2>${category}</h2>
       <div class="ingredient-grid"></div>
     `;
 
@@ -129,13 +135,13 @@ function renderIngredients(searchTerm = "") {
       chip.dataset.value = ing.value;
 
       chip.innerHTML = `
-        <span class="dot"></span>
         <span>${ing.emoji}</span>
         ${capitalize(ing.value)}
       `;
 
       chip.addEventListener("click", () => {
         chip.classList.toggle("selected");
+        updateSelectedUI();
       });
 
       grid.appendChild(chip);
@@ -143,40 +149,40 @@ function renderIngredients(searchTerm = "") {
 
     container.appendChild(section);
   });
+
+  updateSelectedUI();
 }
 
-
-// SEARCH FUNCTION
-
-const searchInput = document.getElementById("ingredient-search");
+/* ---------------------------
+   SEARCH
+----------------------------*/
 
 searchInput.addEventListener("input", () => {
-
   renderIngredients(searchInput.value);
+  document.getElementById("status").textContent = "";
 });
 
-
-// FETCH RECIPES
+/* ---------------------------
+   API FETCH
+----------------------------*/
 
 async function fetchMealsByIngredient(ingredient) {
-
   const res = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`
+    `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`
   );
 
   const data = await res.json();
-
   return data.meals || [];
 }
 
-
-// FIND RECIPES
+/* ---------------------------
+   FIND RECIPES
+----------------------------*/
 
 async function findRecipes() {
 
-  const selected = [
-    ...document.querySelectorAll(".chip.selected")
-  ].map(c => c.dataset.value);
+  const selected = [...document.querySelectorAll(".chip.selected")]
+    .map(c => c.dataset.value);
 
   const status = document.getElementById("status");
   const results = document.getElementById("results");
@@ -186,11 +192,7 @@ async function findRecipes() {
     return;
   }
 
-  status.innerHTML = `
-    <span class="loader"></span>
-    Searching recipes...
-  `;
-
+  status.innerHTML = "🔍 Searching recipes...";
   results.innerHTML = "";
 
   try {
@@ -202,8 +204,7 @@ async function findRecipes() {
     const mealCount = {};
     const mealData = {};
 
-    allResults.forEach((meals) => {
-
+    allResults.forEach(meals => {
       meals.forEach(meal => {
 
         mealCount[meal.idMeal] =
@@ -222,54 +223,47 @@ async function findRecipes() {
       }));
 
     if (!sorted.length) {
-
-      status.textContent =
-        "No recipes found. Try different ingredients.";
-
+      status.textContent = "No recipes found.";
       return;
     }
 
     status.textContent = `${sorted.length} recipes found`;
 
-    results.innerHTML = sorted.map(m => `
+    results.innerHTML = "";
 
-      <div class="recipe-card"
-        onclick="window.open(
-          'https://www.themealdb.com/meal/${m.idMeal}',
-          '_blank'
-        )">
+    sorted.forEach(m => {
 
-        <img
-          src="${m.strMealThumb}"
-          alt="${m.strMeal}"
-          loading="lazy"
-        />
+      const card = document.createElement("div");
+      card.className = "recipe-card";
 
+      card.addEventListener("click", () => {
+        window.open(
+          `https://www.themealdb.com/meal/${m.idMeal}`,
+          "_blank"
+        );
+      });
+
+      card.innerHTML = `
+        <img src="${m.strMealThumb}" alt="${m.strMeal}" loading="lazy" />
         <div class="card-body">
-
           <h3>${m.strMeal}</h3>
-
-          <div class="badges">
-
-            <span class="badge highlight">
-              ${m.matchCount}
-              ingredient${m.matchCount > 1 ? 's' : ''}
-              matched
-            </span>
-
-          </div>
-
+          <span class="badge">
+            ${m.matchCount} ingredient${m.matchCount > 1 ? "s" : ""} matched
+          </span>
         </div>
+      `;
 
-      </div>
+      results.appendChild(card);
+    });
 
-    `).join("");
-
-  } catch (e) {
-
-    console.error(e);
-
-    status.textContent =
-      "Something went wrong. Try again.";
+  } catch (err) {
+    console.error(err);
+    status.textContent = "Something went wrong.";
   }
 }
+
+/* ---------------------------
+   INIT
+----------------------------*/
+
+renderIngredients();
