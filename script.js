@@ -42,15 +42,21 @@ function capitalize(word) {
 function updateSelectedUI() {
   const selected = [...document.querySelectorAll(".chip.selected")];
 
-  selectedContainer.innerHTML = selected.map(chip => {
-    return `
-      <div class="selected-pill" data-value="${chip.dataset.value}">
-        ${chip.innerHTML} ✕
-      </div>
-    `;
-  }).join("");
+  if (!selected.length) {
+    selectedContainer.innerHTML = "";
+    return;
+  }
 
-  // remove when clicking pill
+  selectedContainer.innerHTML = `
+    <div class="selected-wrapper">
+      ${selected.map(chip => `
+        <div class="selected-pill" data-value="${chip.dataset.value}">
+          ${chip.innerHTML} <span class="remove">×</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
   document.querySelectorAll(".selected-pill").forEach(pill => {
     pill.addEventListener("click", () => {
       const value = pill.dataset.value;
