@@ -32,7 +32,7 @@ const ingredientCategories = {
     { value: "cucumber", emoji: "🥒" },
     { value: "lettuce", emoji: "🥬" },
     { value: "zucchini", emoji: "🥒" },
-    { value: "peas", emoji: "🟢" },
+    { value: "peas", emoji: "🫛" },
     { value: "green beans", emoji: "🫛" },
     { value: "cauliflower", emoji: "🥦" },
     { value: "sweet potato", emoji: "🍠" },
@@ -109,8 +109,8 @@ const ingredientCategories = {
 const container = document.getElementById("ingredients-container");
 
 Object.entries(ingredientCategories).forEach(([category, items]) => {
-  const section = document.createElement("div");
 
+  const section = document.createElement("div");
   section.className = "category";
 
   section.innerHTML = `
@@ -121,6 +121,7 @@ Object.entries(ingredientCategories).forEach(([category, items]) => {
   const grid = section.querySelector(".ingredient-grid");
 
   items.forEach(ing => {
+
     const chip = document.createElement("div");
 
     chip.className = "chip";
@@ -150,7 +151,44 @@ function formatCategoryName(name) {
   return name.replace(/([A-Z])/g, " $1").trim();
 }
 
+
+// SEARCH FUNCTIONALITY
+
+const searchInput = document.getElementById("ingredient-search");
+
+searchInput.addEventListener("input", () => {
+
+  const term = searchInput.value.toLowerCase();
+
+  const chips = document.querySelectorAll(".chip");
+
+  chips.forEach(chip => {
+
+    const ingredient = chip.dataset.value.toLowerCase();
+
+    if (ingredient.includes(term)) {
+      chip.style.display = "flex";
+    } else {
+      chip.style.display = "none";
+    }
+  });
+
+  // Hide categories with no visible ingredients
+  document.querySelectorAll(".category").forEach(category => {
+
+    const visibleChips = [...category.querySelectorAll(".chip")]
+      .filter(chip => chip.style.display !== "none");
+
+    category.style.display =
+      visibleChips.length > 0 ? "block" : "none";
+  });
+});
+
+
+// FETCH RECIPES
+
 async function fetchMealsByIngredient(ingredient) {
+
   const res = await fetch(
     `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`
   );
@@ -160,7 +198,11 @@ async function fetchMealsByIngredient(ingredient) {
   return data.meals || [];
 }
 
+
+// FIND RECIPES
+
 async function findRecipes() {
+
   const selected = [
     ...document.querySelectorAll(".chip.selected")
   ].map(c => c.dataset.value);
@@ -181,6 +223,7 @@ async function findRecipes() {
   results.innerHTML = "";
 
   try {
+
     const allResults = await Promise.all(
       selected.map(fetchMealsByIngredient)
     );
@@ -189,7 +232,9 @@ async function findRecipes() {
     const mealData = {};
 
     allResults.forEach((meals) => {
+
       meals.forEach(meal => {
+
         mealCount[meal.idMeal] =
           (mealCount[meal.idMeal] || 0) + 1;
 
@@ -206,14 +251,17 @@ async function findRecipes() {
       }));
 
     if (!sorted.length) {
+
       status.textContent =
         "No recipes found. Try different ingredients.";
+
       return;
     }
 
     status.textContent = `${sorted.length} recipes found`;
 
     results.innerHTML = sorted.map(m => `
+
       <div class="recipe-card"
         onclick="window.open(
           'https://www.themealdb.com/meal/${m.idMeal}',
@@ -227,20 +275,27 @@ async function findRecipes() {
         />
 
         <div class="card-body">
+
           <h3>${m.strMeal}</h3>
 
           <div class="badges">
+
             <span class="badge highlight">
               ${m.matchCount}
               ingredient${m.matchCount > 1 ? 's' : ''}
               matched
             </span>
+
           </div>
+
         </div>
+
       </div>
+
     `).join("");
 
   } catch (e) {
+
     console.error(e);
 
     status.textContent =
