@@ -3,19 +3,42 @@ const ingredientCategories = {
     { value: "chicken", emoji: "🍗" },
     { value: "beef", emoji: "🥩" },
     { value: "salmon", emoji: "🐟" },
+    { value: "tuna", emoji: "🐠" },
+    { value: "cod", emoji: "🐟" },
     { value: "eggs", emoji: "🥚" },
     { value: "shrimp", emoji: "🍤" },
+    { value: "crab", emoji: "🦀" },
+    { value: "lobster", emoji: "🦞" },
     { value: "tofu", emoji: "🟫" },
-    { value: "pork", emoji: "🥓" }
+    { value: "pork", emoji: "🥓" },
+    { value: "bacon", emoji: "🥓" },
+    { value: "turkey", emoji: "🦃" },
+    { value: "sausage", emoji: "🌭" },
+    { value: "ham", emoji: "🍖" },
+    { value: "beans", emoji: "🫘" },
+    { value: "lentils", emoji: "🫘" },
+    { value: "chickpeas", emoji: "🫘" }
   ],
 
   Vegetables: [
     { value: "broccoli", emoji: "🥦" },
     { value: "spinach", emoji: "🥬" },
+    { value: "lettuce", emoji: "🥬" },
+    { value: "cabbage", emoji: "🥬" },
     { value: "onion", emoji: "🧅" },
     { value: "garlic", emoji: "🧄" },
     { value: "tomatoes", emoji: "🍅" },
     { value: "carrot", emoji: "🥕" },
+    { value: "corn", emoji: "🌽" },
+    { value: "cucumber", emoji: "🥒" },
+    { value: "bell pepper", emoji: "🫑" },
+    { value: "jalapeno", emoji: "🌶️" },
+    { value: "potato", emoji: "🥔" },
+    { value: "sweet potato", emoji: "🍠" },
+    { value: "mushroom", emoji: "🍄" },
+    { value: "peas", emoji: "🫛" },
+    { value: "zucchini", emoji: "🥒" },
+    { value: "eggplant", emoji: "🍆" },
     { value: "avocado", emoji: "🥑" }
   ],
 
@@ -23,43 +46,95 @@ const ingredientCategories = {
     { value: "apple", emoji: "🍎" },
     { value: "banana", emoji: "🍌" },
     { value: "orange", emoji: "🍊" },
-    { value: "strawberry", emoji: "🍓" }
+    { value: "strawberry", emoji: "🍓" },
+    { value: "blueberry", emoji: "🫐" },
+    { value: "grapes", emoji: "🍇" },
+    { value: "watermelon", emoji: "🍉" },
+    { value: "pineapple", emoji: "🍍" },
+    { value: "mango", emoji: "🥭" },
+    { value: "peach", emoji: "🍑" },
+    { value: "pear", emoji: "🍐" },
+    { value: "kiwi", emoji: "🥝" },
+    { value: "lemon", emoji: "🍋" },
+    { value: "lime", emoji: "🍋" },
+    { value: "cherries", emoji: "🍒" }
+  ],
+
+  Dairy: [
+    { value: "milk", emoji: "🥛" },
+    { value: "cheese", emoji: "🧀" },
+    { value: "butter", emoji: "🧈" },
+    { value: "yogurt", emoji: "🥣" },
+    { value: "cream", emoji: "🍶" }
+  ],
+
+  Grains: [
+    { value: "rice", emoji: "🍚" },
+    { value: "pasta", emoji: "🍝" },
+    { value: "bread", emoji: "🍞" },
+    { value: "noodles", emoji: "🍜" },
+    { value: "oats", emoji: "🥣" },
+    { value: "quinoa", emoji: "🌾" },
+    { value: "tortilla", emoji: "🫓" }
+  ],
+
+  Spices: [
+    { value: "salt", emoji: "🧂" },
+    { value: "pepper", emoji: "⚫" },
+    { value: "paprika", emoji: "🌶️" },
+    { value: "curry powder", emoji: "🍛" },
+    { value: "oregano", emoji: "🌿" },
+    { value: "basil", emoji: "🌿" },
+    { value: "cinnamon", emoji: "🪵" }
+  ],
+
+  Snacks: [
+    { value: "chocolate", emoji: "🍫" },
+    { value: "cookies", emoji: "🍪" },
+    { value: "popcorn", emoji: "🍿" },
+    { value: "chips", emoji: "🥔" },
+    { value: "nuts", emoji: "🥜" }
   ]
 };
 
-const container = document.getElementById("ingredients-container");
-const searchInput = document.getElementById("ingredient-search");
-const selectedContainer = document.getElementById("selected-container");
+/* ---------------------------
+   KEEP TRACK OF SELECTED ITEMS
+----------------------------*/
 
-function capitalize(word) {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
+const selectedIngredients = new Set();
 
 /* ---------------------------
    SELECTED INGREDIENTS UI
 ----------------------------*/
 
 function updateSelectedUI() {
-  const selected = [...document.querySelectorAll(".chip.selected")];
-
-  if (!selected.length) {
+  if (!selectedIngredients.size) {
     selectedContainer.innerHTML = "";
     return;
   }
 
   selectedContainer.innerHTML = `
     <div class="selected-wrapper">
-      ${selected.map(chip => `
-        <div class="selected-pill" data-value="${chip.dataset.value}">
-          ${chip.innerHTML} <span class="remove">×</span>
-        </div>
-      `).join("")}
+      ${[...selectedIngredients].map(value => {
+        const ingredient = Object.values(ingredientCategories)
+          .flat()
+          .find(i => i.value === value);
+
+        return `
+          <div class="selected-pill" data-value="${value}">
+            ${ingredient.emoji} ${capitalize(value)}
+            <span class="remove">×</span>
+          </div>
+        `;
+      }).join("")}
     </div>
   `;
 
   document.querySelectorAll(".selected-pill").forEach(pill => {
     pill.addEventListener("click", () => {
       const value = pill.dataset.value;
+
+      selectedIngredients.delete(value);
 
       const chip = document.querySelector(`.chip[data-value="${value}"]`);
       if (chip) chip.classList.remove("selected");
@@ -102,10 +177,22 @@ function renderIngredients(searchTerm = "") {
       chip.className = "chip";
       chip.dataset.value = ing.value;
 
+      if (selectedIngredients.has(ing.value)) {
+        chip.classList.add("selected");
+      }
+
       chip.innerHTML = `${ing.emoji} ${capitalize(ing.value)}`;
 
       chip.addEventListener("click", () => {
-        chip.classList.toggle("selected");
+
+        if (selectedIngredients.has(ing.value)) {
+          selectedIngredients.delete(ing.value);
+          chip.classList.remove("selected");
+        } else {
+          selectedIngredients.add(ing.value);
+          chip.classList.add("selected");
+        }
+
         updateSelectedUI();
       });
 
@@ -123,36 +210,17 @@ function renderIngredients(searchTerm = "") {
 searchInput.addEventListener("input", () => {
   const value = searchInput.value.trim();
 
-  if (!value) {
-    container.innerHTML = "";
-    container.classList.remove("show");
-    return;
-  }
-
   container.classList.add("show");
   renderIngredients(value);
 });
-
-/* ---------------------------
-   API CALL
-----------------------------*/
-
-async function fetchMealsByIngredient(ingredient) {
-  const res = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`
-  );
-
-  const data = await res.json();
-  return data.meals || [];
-}
 
 /* ---------------------------
    FIND RECIPES
 ----------------------------*/
 
 async function findRecipes() {
-  const selected = [...document.querySelectorAll(".chip.selected")]
-    .map(c => c.dataset.value);
+
+  const selected = [...selectedIngredients];
 
   const status = document.getElementById("status");
   const results = document.getElementById("results");
@@ -219,3 +287,4 @@ async function findRecipes() {
 ----------------------------*/
 
 renderIngredients();
+updateSelectedUI();
