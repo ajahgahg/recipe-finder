@@ -77,71 +77,10 @@ const ingredientCategories = {
     { value: "mozzarella", emoji: "🧀" },
     { value: "parmesan", emoji: "🧀" },
     { value: "feta", emoji: "🧀" }
-  ],
-
-  HerbsAndSpices: [
-    { value: "basil", emoji: "🌿" },
-    { value: "parsley", emoji: "🌿" },
-    { value: "cilantro", emoji: "🌿" },
-    { value: "oregano", emoji: "🌿" },
-    { value: "thyme", emoji: "🌿" },
-    { value: "rosemary", emoji: "🌿" },
-    { value: "paprika", emoji: "🌶️" },
-    { value: "curry powder", emoji: "🍛" },
-    { value: "cinnamon", emoji: "🟤" },
-    { value: "ginger", emoji: "🫚" }
-  ],
-
-  SaucesAndExtras: [
-    { value: "soy sauce", emoji: "🥡" },
-    { value: "ketchup", emoji: "🍅" },
-    { value: "mustard", emoji: "🟡" },
-    { value: "mayonnaise", emoji: "🥪" },
-    { value: "bbq sauce", emoji: "🍖" },
-    { value: "hot sauce", emoji: "🌶️" },
-    { value: "olive oil", emoji: "🫒" },
-    { value: "vinegar", emoji: "🍶" },
-    { value: "honey", emoji: "🍯" },
-    { value: "peanut butter", emoji: "🥜" }
   ]
 };
 
 const container = document.getElementById("ingredients-container");
-
-Object.entries(ingredientCategories).forEach(([category, items]) => {
-
-  const section = document.createElement("div");
-  section.className = "category";
-
-  section.innerHTML = `
-    <h2>${formatCategoryName(category)}</h2>
-    <div class="ingredient-grid"></div>
-  `;
-
-  const grid = section.querySelector(".ingredient-grid");
-
-  items.forEach(ing => {
-
-    const chip = document.createElement("div");
-
-    chip.className = "chip";
-    chip.dataset.value = ing.value;
-
-    chip.innerHTML = `
-      <span class="dot"></span>
-      <span>${ing.emoji}</span>
-      ${capitalize(ing.value)}
-    `;
-
-    chip.addEventListener("click", () => {
-      chip.classList.toggle("selected");
-    });
-
-    grid.appendChild(chip);
-  });
-
-  container.appendChild(section);
-});
 
 function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
@@ -152,36 +91,68 @@ function formatCategoryName(name) {
 }
 
 
-// SEARCH FUNCTIONALITY
+// RENDER INGREDIENTS
+
+function renderIngredients(searchTerm = "") {
+
+  container.innerHTML = "";
+
+  if (searchTerm.trim() === "") {
+    return;
+  }
+
+  Object.entries(ingredientCategories).forEach(([category, items]) => {
+
+    const filteredItems = items.filter(ing =>
+      ing.value.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (filteredItems.length === 0) {
+      return;
+    }
+
+    const section = document.createElement("div");
+    section.className = "category";
+
+    section.innerHTML = `
+      <h2>${formatCategoryName(category)}</h2>
+      <div class="ingredient-grid"></div>
+    `;
+
+    const grid = section.querySelector(".ingredient-grid");
+
+    filteredItems.forEach(ing => {
+
+      const chip = document.createElement("div");
+
+      chip.className = "chip";
+      chip.dataset.value = ing.value;
+
+      chip.innerHTML = `
+        <span class="dot"></span>
+        <span>${ing.emoji}</span>
+        ${capitalize(ing.value)}
+      `;
+
+      chip.addEventListener("click", () => {
+        chip.classList.toggle("selected");
+      });
+
+      grid.appendChild(chip);
+    });
+
+    container.appendChild(section);
+  });
+}
+
+
+// SEARCH FUNCTION
 
 const searchInput = document.getElementById("ingredient-search");
 
 searchInput.addEventListener("input", () => {
 
-  const term = searchInput.value.toLowerCase();
-
-  const chips = document.querySelectorAll(".chip");
-
-  chips.forEach(chip => {
-
-    const ingredient = chip.dataset.value.toLowerCase();
-
-    if (ingredient.includes(term)) {
-      chip.style.display = "flex";
-    } else {
-      chip.style.display = "none";
-    }
-  });
-
-  // Hide categories with no visible ingredients
-  document.querySelectorAll(".category").forEach(category => {
-
-    const visibleChips = [...category.querySelectorAll(".chip")]
-      .filter(chip => chip.style.display !== "none");
-
-    category.style.display =
-      visibleChips.length > 0 ? "block" : "none";
-  });
+  renderIngredients(searchInput.value);
 });
 
 
