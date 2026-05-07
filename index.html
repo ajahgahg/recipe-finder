@@ -10,29 +10,39 @@
 
 <body>
 
-  <h1>🍽️ Recipe Finder</h1>
+  <div class="app">
 
-  <p class="selection-label">
-    Search ingredients to begin
-  </p>
+    <h1>🍽️ Recipe Finder</h1>
 
-  <input
-    type="text"
-    id="ingredient-search"
-    placeholder="Search ingredients..."
-  />
+    <p class="selection-label">
+      Search ingredients to begin
+    </p>
 
-  <div id="selected-container"></div>
+    <input
+      type="text"
+      id="ingredient-search"
+      placeholder="Search ingredients..."
+      autocomplete="off"
+    />
 
-  <div id="ingredients-container"></div>
+    <!-- Selected ingredients -->
+    <div id="selected-container"></div>
 
-  <button id="find-btn" onclick="findRecipes()">
-    Find Recipes
-  </button>
+    <!-- Search results -->
+    <div id="ingredients-container"></div>
 
-  <div id="status"></div>
-  <div id="results"></div>
+    <button id="find-btn" onclick="findRecipes()">
+      Find Recipes
+    </button>
+
+    <div id="status"></div>
+
+    <!-- Recipe cards -->
+    <div id="results"></div>
+
+  </div>
 
   <script src="script.js"></script>
+
 </body>
 </html>
