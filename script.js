@@ -16,58 +16,73 @@ const ingredients = [
   { value: "lemon", emoji: "🍋" },
   { value: "butter", emoji: "🧈" },
 ];
-
+ 
 const grid = document.getElementById("grid");
+ 
 ingredients.forEach(ing => {
-  const chip = document.createElement("label");
+  const chip = document.createElement("div");
   chip.className = "chip";
-  chip.innerHTML = `<input type="checkbox" value="${ing.value}"><span class="dot"></span><span style="font-size:15px">${ing.emoji}</span>${ing.value.charAt(0).toUpperCase() + ing.value.slice(1)}`;
-  chip.addEventListener("change", () => chip.classList.toggle("selected", chip.querySelector("input").checked));
+  chip.dataset.value = ing.value;
+  chip.innerHTML = `<span class="dot"></span><span>${ing.emoji}</span>${ing.value.charAt(0).toUpperCase() + ing.value.slice(1)}`;
+  chip.addEventListener("click", () => chip.classList.toggle("selected"));
   grid.appendChild(chip);
 });
-
+ 
+async function fetchMealsByIngredient(ingredient) {
+  const res = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`);
+  const data = await res.json();
+  return data.meals || [];
+}
+ 
 async function findRecipes() {
-  const selected = [...document.querySelectorAll(".chip input:checked")].map(i => i.value);
-  if (!selected.length) {
-    document.getElementById("status").textContent = "Pick at least one ingredient first.";
-    return;
-  }
-
+  const selected = [...document.querySelectorAll(".chip.selected")].map(c => c.dataset.value);
   const status = document.getElementById("status");
   const results = document.getElementById("results");
-  status.textContent = "Finding recipes...";
+ 
+  if (!selected.length) {
+    status.textContent = "Pick at least one ingredient first.";
+    return;
+  }
+ 
+  status.innerHTML = `<span class="loader"></span>Searching recipes...`;
   results.innerHTML = "";
-
+ 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: `You are a recipe assistant. When given a list of ingredients, suggest 3 recipes that use some or all of them. Respond ONLY with a JSON array of objects, no markdown, no extra text. Each object: { "name": string, "time": string, "difficulty": "easy"|"medium"|"hard", "uses": string[], "description": string (1-2 sentences) }`,
-        messages: [{ role: "user", content: `Ingredients I have: ${selected.join(", ")}` }]
-      })
+    const allResults = await Promise.all(selected.map(fetchMealsByIngredient));
+ 
+    const mealCount = {};
+    const mealData = {};
+    allResults.forEach((meals, i) => {
+      meals.forEach(meal => {
+        mealCount[meal.idMeal] = (mealCount[meal.idMeal] || 0) + 1;
+        mealData[meal.idMeal] = { ...meal, matchedIngredient: selected[i] };
+      });
     });
-
-    const data = await res.json();
-    const text = data.content.map(i => i.text || "").join("");
-    const clean = text.replace(/```json|```/g, "").trim();
-    const recipes = JSON.parse(clean);
-
-    status.textContent = `${recipes.length} recipes found using your ingredients`;
-    results.innerHTML = recipes.map(r => `
-      <div class="recipe-card">
-        <h3>${r.name}</h3>
-        <p>${r.description}</p>
-        <div>
-          <span class="badge">${r.time}</span>
-          <span class="badge">${r.difficulty}</span>
-          ${r.uses.map(u => `<span class="badge highlight">${u}</span>`).join("")}
+ 
+    const sorted = Object.entries(mealCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 12)
+      .map(([id, count]) => ({ ...mealData[id], matchCount: count }));
+ 
+    if (!sorted.length) {
+      status.textContent = "No recipes found. Try different ingredients.";
+      return;
+    }
+ 
+    status.textContent = `${sorted.length} recipes found`;
+    results.innerHTML = sorted.map(m => `
+      <div class="recipe-card" onclick="window.open('https://www.themealdb.com/meal/${m.idMeal}', '_blank')">
+        <img src="${m.strMealThumb}/preview" alt="${m.strMeal}" loading="lazy" />
+        <div class="card-body">
+          <h3>${m.strMeal}</h3>
+          <div class="badges">
+            <span class="badge highlight">${m.matchCount} ingredient${m.matchCount > 1 ? 's' : ''} matched</span>
+          </div>
         </div>
       </div>
     `).join("");
   } catch (e) {
     status.textContent = "Something went wrong. Try again.";
+    console.error(e);
   }
 }
