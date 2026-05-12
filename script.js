@@ -19,15 +19,15 @@ async function fetchMealsByIngredient(ingredient) { //takes data from the api, a
     const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`; //fetches free recipe api
     const res = await fetch(url); //fetches api 
 
-    if (!res.ok) {
-      console.warn(`API returned ${res.status} for ingredient: ${ingredient}`);
-      return [];
+    if (!res.ok) { //makes sure the request for api is successful
+      console.warn(`API returned ${res.status} for ingredient: ${ingredient}`); //goes to console and warns if api returned an ingredient
+      return []; 
     }
 
-    const data = await res.json();
-    console.log(`Results for "${ingredient}":`, data.meals?.length ?? 0, "meals");
-    return data.meals || [];
-  } catch (err) {
+    const data = await res.json(); //turns api data to javasciprt data
+    console.log(`Results for "${ingredient}":`, data.meals?.length ?? 0, "meals"); //prints amount of meals located
+    return data.meals || []; //makes sure meals never equals null
+  } catch (err) { 
     console.error(`Network error fetching "${ingredient}":`, err.message);
     return [];
   }
