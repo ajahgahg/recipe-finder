@@ -260,3 +260,44 @@ h1 {
   body { padding: 2rem 1rem; }
   #results { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
+
+.recipe-page {
+  max-width: 800px;
+  margin: auto;
+  text-align: left;
+}
+
+.recipe-image {
+  width: 100%;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.check-item.have {
+  background: rgba(0, 255, 120, 0.12);
+}
+
+.check-item.need {
+  background: rgba(255, 180, 0, 0.12);
+}
+
+.instructions {
+  line-height: 1.7;
+  white-space: pre-line;
+}
