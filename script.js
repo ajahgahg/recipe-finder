@@ -327,8 +327,13 @@ async function findRecipes() {
       : "1 ingredient matched";
 
     card.onclick = () => {
-      window.open(`https://www.themealdb.com/meal/${meal.idMeal}`, "_blank");
-    };
+  localStorage.setItem(
+    "selectedIngredients",
+    JSON.stringify([...selectedIngredients])
+  );
+
+  window.location.href = `recipe.html?id=${meal.idMeal}`;
+};
 
     card.innerHTML = `
       <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
