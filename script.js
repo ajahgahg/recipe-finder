@@ -1,3 +1,36 @@
+/* ---------------------------
+   DOM REFERENCES
+----------------------------*/
+
+const container = document.getElementById("ingredients-container");
+const selectedContainer = document.getElementById("selected-container");
+const searchInput = document.getElementById("ingredient-search");
+
+/* ---------------------------
+   HELPER FUNCTIONS
+----------------------------*/
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+async function fetchMealsByIngredient(ingredient) {
+  try {
+    const res = await fetch(
+      `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`
+    );
+    const data = await res.json();
+    return data.meals || [];
+  } catch (err) {
+    console.error(`Failed to fetch meals for ${ingredient}:`, err);
+    return [];
+  }
+}
+
+/* ---------------------------
+   INGREDIENT DATA
+----------------------------*/
+
 const ingredientCategories = {
   Proteins: [
     { value: "chicken", emoji: "🍗" },
@@ -209,9 +242,12 @@ function renderIngredients(searchTerm = "") {
 
 searchInput.addEventListener("input", () => {
   const value = searchInput.value.trim();
-
   container.classList.add("show");
   renderIngredients(value);
+});
+
+searchInput.addEventListener("focus", () => {
+  container.classList.add("show");
 });
 
 /* ---------------------------
@@ -219,9 +255,7 @@ searchInput.addEventListener("input", () => {
 ----------------------------*/
 
 async function findRecipes() {
-
   const selected = [...selectedIngredients];
-
   const status = document.getElementById("status");
   const results = document.getElementById("results");
 
@@ -230,7 +264,7 @@ async function findRecipes() {
     return;
   }
 
-  status.textContent = "Searching recipes...";
+  status.textContent = `Searching recipes for: ${selected.join(", ")}...`;
   results.innerHTML = "";
 
   const allResults = await Promise.all(
@@ -252,29 +286,35 @@ async function findRecipes() {
     .slice(0, 12)
     .map(([id, count]) => ({
       ...mealData[id],
-      matchCount: count
+      matchCount: count,
+      totalIngredients: selected.length
     }));
 
   if (!sorted.length) {
-    status.textContent = "No recipes found.";
+    status.textContent = "No recipes found for those ingredients.";
     return;
   }
 
-  status.textContent = `${sorted.length} recipes found`;
+  const best = sorted[0].matchCount;
+  status.textContent = `${sorted.length} recipes found — sorted by best ingredient match`;
 
   sorted.forEach(meal => {
     const card = document.createElement("div");
     card.className = "recipe-card";
+
+    const matchLabel = meal.totalIngredients > 1
+      ? `${meal.matchCount} of ${meal.totalIngredients} ingredients matched`
+      : "1 ingredient matched";
 
     card.onclick = () => {
       window.open(`https://www.themealdb.com/meal/${meal.idMeal}`, "_blank");
     };
 
     card.innerHTML = `
-      <img src="${meal.strMealThumb}" />
+      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
       <div class="card-body">
         <h3>${meal.strMeal}</h3>
-        <span>${meal.matchCount} match(es)</span>
+        <span>${matchLabel}</span>
       </div>
     `;
 
@@ -286,5 +326,6 @@ async function findRecipes() {
    INIT
 ----------------------------*/
 
+container.classList.add("show");
 renderIngredients();
 updateSelectedUI();
