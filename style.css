@@ -324,3 +324,15 @@ h1 {
 .back-btn:active {
   transform: scale(0.97);
 }
+
+.check-item {
+  transition: all 0.2s ease;
+  border-radius: 12px;
+}
+
+/* when checkbox is checked, style the whole row */
+.check-item:has(input:checked) {
+  background: rgba(0, 255, 120, 0.2);
+  color: #0a7a2f;
+  font-weight: 600;
+}
