@@ -114,7 +114,8 @@ const ingredientCategories = {
     { value: "noodles", emoji: "🍜" },
     { value: "oats", emoji: "🥣" },
     { value: "quinoa", emoji: "🌾" },
-    { value: "tortilla", emoji: "🫓" }
+    { value: "tortilla", emoji: "🫓" },
+    { value: "flour", emoji: "🌾"}
   ],
 
   Spices: [
