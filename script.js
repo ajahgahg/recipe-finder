@@ -32,7 +32,6 @@ async function fetchMealsByIngredient(ingredient) { //takes data from the api, a
     return [];
   }
 }
-
 /* ---------------------------
    INGREDIENT DATA
 ----------------------------*/
@@ -41,9 +40,11 @@ const ingredientCategories = {
   Proteins: [
     { value: "chicken", emoji: "🍗" },
     { value: "beef", emoji: "🥩" },
+    { value: "ground beef", emoji: "🥩" },
     { value: "salmon", emoji: "🐟" },
     { value: "tuna", emoji: "🐠" },
     { value: "cod", emoji: "🐟" },
+    { value: "tilapia", emoji: "🐟" },
     { value: "eggs", emoji: "🥚" },
     { value: "shrimp", emoji: "🍤" },
     { value: "crab", emoji: "🦀" },
@@ -54,7 +55,11 @@ const ingredientCategories = {
     { value: "turkey", emoji: "🦃" },
     { value: "sausage", emoji: "🌭" },
     { value: "ham", emoji: "🍖" },
+    { value: "chicken breast", emoji: "🍗" },
+    { value: "chicken thigh", emoji: "🍗" },
     { value: "beans", emoji: "🫘" },
+    { value: "black beans", emoji: "🫘" },
+    { value: "kidney beans", emoji: "🫘" },
     { value: "lentils", emoji: "🫘" },
     { value: "chickpeas", emoji: "🫘" }
   ],
@@ -64,9 +69,10 @@ const ingredientCategories = {
     { value: "spinach", emoji: "🥬" },
     { value: "lettuce", emoji: "🥬" },
     { value: "cabbage", emoji: "🥬" },
+    { value: "kale", emoji: "🥬" },
     { value: "onion", emoji: "🧅" },
     { value: "garlic", emoji: "🧄" },
-    { value: "tomatoes", emoji: "🍅" },
+    { value: "tomato", emoji: "🍅" },
     { value: "carrot", emoji: "🥕" },
     { value: "corn", emoji: "🌽" },
     { value: "cucumber", emoji: "🥒" },
@@ -76,9 +82,11 @@ const ingredientCategories = {
     { value: "sweet potato", emoji: "🍠" },
     { value: "mushroom", emoji: "🍄" },
     { value: "peas", emoji: "🫛" },
+    { value: "green beans", emoji: "🫛" },
     { value: "zucchini", emoji: "🥒" },
     { value: "eggplant", emoji: "🍆" },
-    { value: "avocado", emoji: "🥑" }
+    { value: "avocado", emoji: "🥑" },
+    { value: "celery", emoji: "🥬" }
   ],
 
   Fruits: [
@@ -87,6 +95,8 @@ const ingredientCategories = {
     { value: "orange", emoji: "🍊" },
     { value: "strawberry", emoji: "🍓" },
     { value: "blueberry", emoji: "🫐" },
+    { value: "raspberry", emoji: "🍓" },
+    { value: "blackberry", emoji: "🫐" },
     { value: "grapes", emoji: "🍇" },
     { value: "watermelon", emoji: "🍉" },
     { value: "pineapple", emoji: "🍍" },
@@ -102,30 +112,43 @@ const ingredientCategories = {
   Dairy: [
     { value: "milk", emoji: "🥛" },
     { value: "cheese", emoji: "🧀" },
+    { value: "cheddar cheese", emoji: "🧀" },
+    { value: "mozzarella", emoji: "🧀" },
     { value: "butter", emoji: "🧈" },
     { value: "yogurt", emoji: "🥣" },
-    { value: "cream", emoji: "🍶" }
+    { value: "cream", emoji: "🍶" },
+    { value: "sour cream", emoji: "🥣" }
   ],
 
   Grains: [
     { value: "rice", emoji: "🍚" },
+    { value: "white rice", emoji: "🍚" },
+    { value: "brown rice", emoji: "🍚" },
     { value: "pasta", emoji: "🍝" },
+    { value: "spaghetti", emoji: "🍝" },
     { value: "bread", emoji: "🍞" },
     { value: "noodles", emoji: "🍜" },
+    { value: "ramen noodles", emoji: "🍜" },
     { value: "oats", emoji: "🥣" },
     { value: "quinoa", emoji: "🌾" },
     { value: "tortilla", emoji: "🫓" },
-    { value: "flour", emoji: "🌾"}
+    { value: "flour", emoji: "🌾" },
+    { value: "couscous", emoji: "🌾" }
   ],
 
   Spices: [
     { value: "salt", emoji: "🧂" },
     { value: "pepper", emoji: "⚫" },
+    { value: "black pepper", emoji: "⚫" },
     { value: "paprika", emoji: "🌶️" },
     { value: "curry powder", emoji: "🍛" },
     { value: "oregano", emoji: "🌿" },
     { value: "basil", emoji: "🌿" },
-    { value: "cinnamon", emoji: "🪵" }
+    { value: "thyme", emoji: "🌿" },
+    { value: "rosemary", emoji: "🌿" },
+    { value: "cinnamon", emoji: "🪵" },
+    { value: "garlic powder", emoji: "🧄" },
+    { value: "onion powder", emoji: "🧅" }
   ],
 
   Snacks: [
@@ -133,10 +156,13 @@ const ingredientCategories = {
     { value: "cookies", emoji: "🍪" },
     { value: "popcorn", emoji: "🍿" },
     { value: "chips", emoji: "🥔" },
-    { value: "nuts", emoji: "🥜" }
+    { value: "potato chips", emoji: "🥔" },
+    { value: "nuts", emoji: "🥜" },
+    { value: "peanuts", emoji: "🥜" },
+    { value: "almonds", emoji: "🥜" },
+    { value: "pretzels", emoji: "🥨" }
   ]
 };
-
 /* ---------------------------
    KEEP TRACK OF SELECTED ITEMS
 ----------------------------*/
