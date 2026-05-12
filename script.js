@@ -242,12 +242,18 @@ function renderIngredients(searchTerm = "") {
 
 searchInput.addEventListener("input", () => {
   const value = searchInput.value.trim();
-  container.classList.add("show");
-  renderIngredients(value);
+  if (value) {
+    container.classList.add("show");
+    renderIngredients(value);
+  } else {
+    container.classList.remove("show");
+  }
 });
 
 searchInput.addEventListener("focus", () => {
-  container.classList.add("show");
+  if (searchInput.value.trim()) {
+    container.classList.add("show");
+  }
 });
 
 /* ---------------------------
@@ -326,6 +332,5 @@ async function findRecipes() {
    INIT
 ----------------------------*/
 
-container.classList.add("show");
 renderIngredients();
 updateSelectedUI();
