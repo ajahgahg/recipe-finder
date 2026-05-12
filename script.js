@@ -2,22 +2,22 @@
    DOM REFERENCES
 ----------------------------*/
 
-const container = document.getElementById("ingredients-container");
-const selectedContainer = document.getElementById("selected-container");
-const searchInput = document.getElementById("ingredient-search");
+const container = document.getElementById("ingredients-container"); //takes element from html, and puts in javascript so js can use it
+const selectedContainer = document.getElementById("selected-container"); //takes element from html, and puts in javascript so js can use it
+const searchInput = document.getElementById("ingredient-search"); //takes element from html, and puts in javascript so js can use it
 
 /* ---------------------------
    HELPER FUNCTIONS
 ----------------------------*/
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+function capitalize(str) { //capatilizes words
+  return str.charAt(0).toUpperCase() + str.slice(1); //removes first letter from word, and changes it to uppercase
 }
 
-async function fetchMealsByIngredient(ingredient) {
-  try {
-    const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`;
-    const res = await fetch(url);
+async function fetchMealsByIngredient(ingredient) { //takes data from the api, async function
+  try { //incase anything goes wrong - error handling, java scriptw ill save it!
+    const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`; //fetches free recipe api
+    const res = await fetch(url); //fetches api 
 
     if (!res.ok) {
       console.warn(`API returned ${res.status} for ingredient: ${ingredient}`);
