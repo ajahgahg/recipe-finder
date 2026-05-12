@@ -301,3 +301,26 @@ h1 {
   line-height: 1.7;
   white-space: pre-line;
 }
+
+.back-btn {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+
+  background: #ff7a00;
+  color: white;
+
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.back-btn:active {
+  transform: scale(0.97);
+}
