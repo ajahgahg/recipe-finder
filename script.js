@@ -16,13 +16,19 @@ function capitalize(str) {
 
 async function fetchMealsByIngredient(ingredient) {
   try {
-    const res = await fetch(
-      `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`
-    );
+    const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(ingredient)}`;
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      console.warn(`API returned ${res.status} for ingredient: ${ingredient}`);
+      return [];
+    }
+
     const data = await res.json();
+    console.log(`Results for "${ingredient}":`, data.meals?.length ?? 0, "meals");
     return data.meals || [];
   } catch (err) {
-    console.error(`Failed to fetch meals for ${ingredient}:`, err);
+    console.error(`Network error fetching "${ingredient}":`, err.message);
     return [];
   }
 }
@@ -277,6 +283,8 @@ async function findRecipes() {
     selected.map(fetchMealsByIngredient)
   );
 
+  console.log("All API results:", allResults);
+
   const mealCount = {};
   const mealData = {};
 
@@ -297,7 +305,12 @@ async function findRecipes() {
     }));
 
   if (!sorted.length) {
-    status.textContent = "No recipes found for those ingredients.";
+    const totalRaw = allResults.flat().length;
+    if (totalRaw === 0) {
+      status.textContent = "⚠️ Could not reach the recipe API. Check your internet connection or open the browser console for details.";
+    } else {
+      status.textContent = "No recipes found for those ingredients.";
+    }
     return;
   }
 
