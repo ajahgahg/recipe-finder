@@ -117,7 +117,8 @@ const ingredientCategories = {
     { value: "butter", emoji: "🧈" },
     { value: "yogurt", emoji: "🥣" },
     { value: "cream", emoji: "🍶" },
-    { value: "sour cream", emoji: "🥣" }
+    { value: "sour cream", emoji: "🥣" },
+  { value: "cheese slices", emoji: "🧀" }
   ],
 
   Grains: [
@@ -161,6 +162,16 @@ const ingredientCategories = {
     { value: "peanuts", emoji: "🥜" },
     { value: "almonds", emoji: "🥜" },
     { value: "pretzels", emoji: "🥨" }
+  ],
+
+   Liquids: [
+    { value: "ketchup", emoji: "🟥" },
+    { value: "mustard", emoji: "🟨" },
+    { value: "mayo", emoji: "⬜" },
+    { value: "chicken stock", emoji: "🐔" },
+    { value: "olive oil", emoji: "🫒" },
+    { value: "water", emoji: "💧" },
+    { value: "red wine", emoji: "🟥" }
   ]
 };
 /* ---------------------------
