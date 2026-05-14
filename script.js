@@ -184,7 +184,7 @@ const selectedIngredients = new Set(); //creates a const for all of the ingredie
    SELECTED INGREDIENTS UI
 ----------------------------*/
 
-function updateSelectedUI() {
+function updateSelectedUI() { 
   if (!selectedIngredients.size) {
     selectedContainer.innerHTML = "";
     return;
@@ -304,13 +304,13 @@ searchInput.addEventListener("focus", () => {
    FIND RECIPES
 ----------------------------*/
 
-async function findRecipes() {
-  const selected = [...selectedIngredients];
-  const status = document.getElementById("status");
-  const results = document.getElementById("results");
+async function findRecipes() { //is connected to button so that recipes can be found
+  const selected = [...selectedIngredients];  //takes the selected ingredients and makes it a const
+  const status = document.getElementById("status");  //
+  const results = document.getElementById("results"); 
 
   if (!selected.length) {
-    status.textContent = "Pick at least one ingredient first.";
+    status.textContent = "Pick at least one ingredient first."; //makes sure that user chooses any ingreidents before pressing the button
     return;
   }
 
