@@ -12,16 +12,16 @@ async function loadRecipe() {
   try {
 
     const res = await fetch(
-      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`
+      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}` //api for recipes
     );
 
-    const data = await res.json();
+    const data = await res.json(); //extracts data from api
 
-    const meal = data.meals[0];
+    const meal = data.meals[0]; //creates a const for the meals, taken from api
 
-    const ingredients = [];
+    const ingredients = []; //another const for ingredients!
 
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 20; i++) { //shows max of ingredients being 20
 
       const ingredient = meal[`strIngredient${i}`];
       const measure = meal[`strMeasure${i}`];
