@@ -28,7 +28,7 @@ async function fetchMealsByIngredient(ingredient) { //takes data from the api, a
     console.log(`Results for "${ingredient}":`, data.meals?.length ?? 0, "meals"); //prints amount of meals located
     return data.meals || []; //makes sure meals never equals null
   } catch (err) { 
-    console.error(`Network error fetching "${ingredient}":`, err.message);
+    console.error(`Network error fetching "${ingredient}":`, err.message); //this will be here incase an error in the api happens or an ingredeint doesnt exist
     return []; //returns the data from the api
   }
 }
@@ -36,7 +36,7 @@ async function fetchMealsByIngredient(ingredient) { //takes data from the api, a
    INGREDIENT DATA
 ----------------------------*/
 
-const ingredientCategories = {
+const ingredientCategories = { //creates a value for all the ingredients so it shows up
   Proteins: [
     { value: "chicken", emoji: "🍗" },
     { value: "beef", emoji: "🥩" },
@@ -284,7 +284,7 @@ function renderIngredients(searchTerm = "") {
    SEARCH
 ----------------------------*/
 
-searchInput.addEventListener("input", () => {
+searchInput.addEventListener("input", () => { 
   const value = searchInput.value.trim();
   if (value) {
     container.classList.add("show");
@@ -345,42 +345,42 @@ async function findRecipes() {
   if (!sorted.length) {
     const totalRaw = allResults.flat().length;
     if (totalRaw === 0) {
-      status.textContent = "⚠️ Could not reach the recipe API. Check your internet connection or open the browser console for details.";
+      status.textContent = "⚠️ Could not reach the recipe API. Check your internet connection or open the browser console for details."; //response incase their is no recipe that can be found
     } else {
-      status.textContent = "No recipes found for those ingredients.";
+      status.textContent = "No recipes found for those ingredients."; //if an ingredient doesn't exist, then this message will show
     }
     return;
   }
 
-  const best = sorted[0].matchCount;
-  status.textContent = `${sorted.length} recipes found — sorted by best ingredient match`;
+  const best = sorted[0].matchCount; //creates a list of best meals, for example if the most ingredients match it will show
+  status.textContent = `${sorted.length} recipes found — sorted by best ingredient match`; //just the text that is shown when meal is found
 
-  sorted.forEach(meal => {
-    const card = document.createElement("div");
-    card.className = "recipe-card";
-
-    const matchLabel = meal.totalIngredients > 1
-      ? `${meal.matchCount} of ${meal.totalIngredients} ingredients matched`
-      : "1 ingredient matched";
+  sorted.forEach(meal => {  
+    const card = document.createElement("div"); //creates a card, by using html elements and this card will show when recipes are found
+    card.className = "recipe-card"; //creates a card for the recipes
+ 
+    const matchLabel = meal.totalIngredients > 1 //if the ingredient is more than one, it will write the text below.
+      ? `${meal.matchCount} of ${meal.totalIngredients} ingredients matched` //creates the text for the amount of ingredients chosen, and amount of meals that match
+      : "1 ingredient matched"; //incase only 1 ingredient is put, it will do 1 ingredient matched instead of staying 1 ingredients matched
 
     card.onclick = () => {
   localStorage.setItem(
     "selectedIngredients",
-    JSON.stringify([...selectedIngredients])
+    JSON.stringify([...selectedIngredients]) 
   );
 
-  window.location.href = `recipe.html?id=${meal.idMeal}`;
+  window.location.href = `recipe.html?id=${meal.idMeal}`; //it takes a meal from the api and gets the website
 };
 
-    card.innerHTML = `
-      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" />
-      <div class="card-body">
+    card.innerHTML = ` 
+      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" /> 
+      <div class="card-body"> 
         <h3>${meal.strMeal}</h3>
         <span>${matchLabel}</span>
       </div>
     `;
-
-    results.appendChild(card);
+//the code above me is basically creating a card for the recipe html, it is the recipe that is shown
+    results.appendChild(card); //adds new elements for html, for ex: it will make the html for the recipes!
   });
 }
 
