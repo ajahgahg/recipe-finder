@@ -242,25 +242,25 @@ function renderIngredients(searchTerm = "") {
     section.className = "category";
 
     section.innerHTML = `
-      <h2>${category}</h2>
-      <div class="ingredient-grid"></div>
-    `;
+      <h2>${category}</h2> 
+      <div class="ingredient-grid"></div> 
+    `; //line above makes a div for the ingredients,
 
-    const grid = section.querySelector(".ingredient-grid");
+    const grid = section.querySelector(".ingredient-grid"); //another grid is made so that the ingredients can be selected
 
-    filtered.forEach(ing => {
+    filtered.forEach(ing => { //
       const chip = document.createElement("div");
 
       chip.className = "chip";
       chip.dataset.value = ing.value;
 
-      if (selectedIngredients.has(ing.value)) {
+      if (selectedIngredients.has(ing.value)) { //when an ingredient is clicked it has a value
         chip.classList.add("selected");
       }
 
       chip.innerHTML = `${ing.emoji} ${capitalize(ing.value)}`;
 
-      chip.addEventListener("click", () => {
+      chip.addEventListener("click", () => { // an event listener for when a click happens, the ingredient is selcted
 
         if (selectedIngredients.has(ing.value)) {
           selectedIngredients.delete(ing.value);
@@ -294,9 +294,9 @@ searchInput.addEventListener("input", () => {
   }
 });
 
-searchInput.addEventListener("focus", () => {
-  if (searchInput.value.trim()) {
-    container.classList.add("show");
+searchInput.addEventListener("focus", () => { //when something is searched it will make sure that the function happens below
+  if (searchInput.value.trim()) { //trims down the ingredients 
+    container.classList.add("show"); //shows all available ingredients that match what is searched
   }
 });
 
