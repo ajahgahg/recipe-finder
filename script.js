@@ -225,14 +225,14 @@ function updateSelectedUI() {
    RENDER INGREDIENTS
 ----------------------------*/
 
-function renderIngredients(searchTerm = "") {
+function renderIngredients(searchTerm = "") { //creates a fill in for the ingredients
   container.innerHTML = "";
 
   Object.entries(ingredientCategories).forEach(([category, items]) => {
 
-    const filtered = searchTerm
+    const filtered = searchTerm //adds lowercase for the ingredients when searched
       ? items.filter(i =>
-          i.value.toLowerCase().includes(searchTerm.toLowerCase())
+          i.value.toLowerCase().includes(searchTerm.toLowerCase()) 
         )
       : items;
 
@@ -276,7 +276,7 @@ function renderIngredients(searchTerm = "") {
       grid.appendChild(chip);
     });
 
-    container.appendChild(section);
+    container.appendChild(section); 
   });
 }
 
@@ -284,13 +284,13 @@ function renderIngredients(searchTerm = "") {
    SEARCH
 ----------------------------*/
 
-searchInput.addEventListener("input", () => { 
-  const value = searchInput.value.trim();
+searchInput.addEventListener("input", () => { //for the search button, allows an input to be added
+  const value = searchInput.value.trim();  //trims the value from the ingredient
   if (value) {
-    container.classList.add("show");
-    renderIngredients(value);
+    container.classList.add("show"); //shows the ingredients that match what is searched
+    renderIngredients(value); //allows the ingredients to show up
   } else {
-    container.classList.remove("show");
+    container.classList.remove("show"); //if not, doesnt show if the ingredient doesnt appear
   }
 });
 
