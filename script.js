@@ -29,7 +29,7 @@ async function fetchMealsByIngredient(ingredient) { //takes data from the api, a
     return data.meals || []; //makes sure meals never equals null
   } catch (err) { 
     console.error(`Network error fetching "${ingredient}":`, err.message);
-    return [];
+    return []; //returns the data from the api
   }
 }
 /* ---------------------------
@@ -178,7 +178,7 @@ const ingredientCategories = {
    KEEP TRACK OF SELECTED ITEMS
 ----------------------------*/
 
-const selectedIngredients = new Set();
+const selectedIngredients = new Set(); //creates a const for all of the ingredients and it shows them in the categories
 
 /* ---------------------------
    SELECTED INGREDIENTS UI
@@ -197,16 +197,16 @@ function updateSelectedUI() {
           .flat()
           .find(i => i.value === value);
 
-        return `
+        return ` 
           <div class="selected-pill" data-value="${value}">
-            ${ingredient.emoji} ${capitalize(value)}
+            ${ingredient.emoji} ${capitalize(value)} 
             <span class="remove">×</span>
-          </div>
+          </div> 
         `;
       }).join("")}
     </div>
   `;
-
+ //this will ensure that the pill will capitilize the ingredients, then will also show the emoji that i put
   document.querySelectorAll(".selected-pill").forEach(pill => {
     pill.addEventListener("click", () => {
       const value = pill.dataset.value;
