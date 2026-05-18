@@ -190,7 +190,7 @@ function updateSelectedUI() {
     return;
   }
 
-  selectedContainer.innerHTML = `
+  selectedContainer.innerHTML = ` 
     <div class="selected-wrapper">
       ${[...selectedIngredients].map(value => {
         const ingredient = Object.values(ingredientCategories)
@@ -207,7 +207,7 @@ function updateSelectedUI() {
     </div>
   `;
  //this will ensure that the pill will capitilize the ingredients, then will also show the emoji that i put
-  document.querySelectorAll(".selected-pill").forEach(pill => {
+  document.querySelectorAll(".selected-pill").forEach(pill => { //selects pill and adds an event listener so when clicked the pill changes color
     pill.addEventListener("click", () => {
       const value = pill.dataset.value;
 
@@ -314,14 +314,14 @@ async function findRecipes() { //is connected to button so that recipes can be f
     return;
   }
 
-  status.textContent = `Searching recipes for: ${selected.join(", ")}...`;
+  status.textContent = `Searching recipes for: ${selected.join(", ")}...`; //loading screen kindaish where when button is clicked this will be shown
   results.innerHTML = "";
 
   const allResults = await Promise.all(
     selected.map(fetchMealsByIngredient)
   );
 
-  console.log("All API results:", allResults);
+  console.log("All API results:", allResults); //for api results
 
   const mealCount = {};
   const mealData = {};
@@ -335,7 +335,7 @@ async function findRecipes() { //is connected to button so that recipes can be f
 
   const sorted = Object.entries(mealCount)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 12)
+    .slice(0, 12) //only shows 12 meals
     .map(([id, count]) => ({
       ...mealData[id],
       matchCount: count,
@@ -365,7 +365,7 @@ async function findRecipes() { //is connected to button so that recipes can be f
 
     card.onclick = () => {
   localStorage.setItem(
-    "selectedIngredients",
+    "selectedIngredients", //for the ingredients that are selected
     JSON.stringify([...selectedIngredients]) 
   );
 
@@ -377,8 +377,8 @@ async function findRecipes() { //is connected to button so that recipes can be f
       <div class="card-body"> 
         <h3>${meal.strMeal}</h3>
         <span>${matchLabel}</span>
-      </div>
-    `;
+      </div> 
+    `;//a card for the meals! so when its shown
 //the code above me is basically creating a card for the recipe html, it is the recipe that is shown
     results.appendChild(card); //adds new elements for html, for ex: it will make the html for the recipes!
   });
